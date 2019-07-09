@@ -1,41 +1,26 @@
 <template>
   <div class="container">
     <div>
-      <logo />
-      <h1 class="title">
-        wallet-payment
-      </h1>
-      <h2 class="subtitle">
-        wallet &amp; payment
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+      <div class="empty-wallet-bg"></div>
+
+      <div class="default-color" style="margin-top: 10px;">若暂无钱包，请先创建钱包</div>
+
+      <div style="margin-top: 133px;">
+        <el-button type="success">
+          <nuxt-link to="/wallet">创建钱包</nuxt-link>
+        </el-button>
+        <el-button type="primary" style="margin-left: 80px;">
+          <nuxt-link to="/payment">钱包转账</nuxt-link> 
+        </el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-
 export default {
-  components: {
-    Logo
-  }
-}
+  components: {}
+};
 </script>
 
 <style>
@@ -44,13 +29,21 @@ export default {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
   text-align: center;
 }
 
+.empty-wallet-bg {
+  background: url("~assets/img/empty-wallet.png");
+  background-repeat: no-repeat;
+  margin-top: 253px;
+  width: 280px;
+  height: 153px;
+  background-size: contain;
+}
+
 .title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   display: block;
   font-weight: 300;
   font-size: 100px;
