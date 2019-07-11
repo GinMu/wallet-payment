@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="header">钱包转账</div>
-    <div style="margin: 58px 0;">
-        <el-form :model="form" :rules="rules" ref="form" label-width="140px" style="width: 600px;margin: 58px auto;">
+    <div class="content-container" >
+        <el-form :model="form" :rules="rules" ref="form" label-width="140px">
             <el-form-item label="我的钱包地址：" prop="address">
                 <el-input type="text" v-model="form.address" autocomplete="off" placeholder="请输入转出钱包地址"></el-input>
             </el-form-item>
@@ -16,13 +16,13 @@
                 <el-form-item label="转出数量：" prop="amount">
                     <el-input type="text" v-model="form.amount" autocomplete="off" :placeholder="amountPlaceHolder"></el-input>
                 </el-form-item>
-                <el-select v-model="form.currency" placeholder="币种" style="position: absolute; left: 620px; top: 0; width: 100px;" @change="updatePlaceHolder">
+                <el-select v-model="form.currency" placeholder="币种" class="choose-token-select" @change="updatePlaceHolder">
                     <el-option v-for="item in tokens" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
 
                 <p class="choose-token default-color">选择转账币种</p>
             </div>
-            <el-form-item label="转账备注：" prop="memo">
+            <el-form-item label="转账备注：" prop="memo" class="memo">
                 <el-input type="text" v-model="form.memo" autocomplete="off" placeholder="请输入留言"></el-input>
             </el-form-item>
 
@@ -204,14 +204,4 @@ export default {
 </script>
 
 <style>
-.choose-token {
-  position: absolute;
-  left: 730px;
-  top: 0;
-  width: 100px;
-  text-align: center;
-  height: 40px;
-  line-height: 40px;
-  font-size: 16px;
-}
 </style>
