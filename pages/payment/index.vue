@@ -174,9 +174,9 @@ export default {
       const obj = {
         currency: this.form.currency,
         amount: this.form.amount,
-        address: this.form.address,
-        secret: this.form.secret,
-        to: this.form.to,
+        address: this.form.address.trim(),
+        secret: this.form.secret.trim(),
+        to: this.form.to.trim(),
         issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
         memo: this.form.memo,
         hosts: this.exHosts,
