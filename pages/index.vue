@@ -5,6 +5,7 @@
 
       <div class="default-color" style="margin-top: 10px;">若暂无钱包，请先创建钱包</div>
 
+      <p style="margin-top: 20px;" v-if="!isWebkit">建议使用Chrome浏览器打开本页面</p>
       <div style="margin-top: 133px;">
         <el-button type="success">
           <nuxt-link to="/wallet">创建钱包</nuxt-link>
@@ -19,7 +20,12 @@
 
 <script>
 export default {
-  components: {}
+  components: {},
+  data() {
+    return {
+      isWebkit: navigator.userAgent.indexOf("AppleWebKit") > -1
+    };
+  }
 };
 </script>
 

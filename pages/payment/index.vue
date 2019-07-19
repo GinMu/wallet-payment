@@ -156,7 +156,7 @@ export default {
         }
         this.$confirm(
           `确认向 ${this.form.to} 转 ${this.form.amount} ${
-            this.form.currency
+            this.form.currency === "SWT" ? "SWTC" : this.form.currency
           }?`,
           "转账确认",
           {

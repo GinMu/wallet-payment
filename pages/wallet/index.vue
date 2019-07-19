@@ -3,7 +3,8 @@
     <div class="header">创建钱包</div>
     <div class="content-container">
         <p class="danger">重要提示：</p>
-        <p class="default" style="margin-top: 4px;">数字资产去中心化交易平台，不保存您的钱包数据，特别是钱包密钥，<span class="danger">一旦丢失，无法找回，请复制保存并抄写，</span>务必妥善保管！！！</p>
+        <p class="default" style="margin-top: 4px;">目前创建钱包网页小工具基于开源代码生成，仅限内部使用和过渡期间使用，后续建议开发人员基于开源代码进行独立的二次开发。</p>
+        <p class="default" style="margin-top: 4px;">钱包的创建是在客户端生成的，不会被存档，所以<span class="danger">请相关人员务必抄写好钱包秘钥和地址，妥善保存，若丢失，则不可找回！！！</span></p>
         <el-form ref="form" :model="form" label-width="100px" style="margin-top: 63px;">
             <el-form-item label="钱包地址：">
                 <el-input v-model="form.address" :readonly="true"></el-input>
