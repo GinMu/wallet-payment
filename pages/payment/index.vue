@@ -25,8 +25,7 @@
             <el-form-item label="转账备注：" prop="memo" class="memo">
                 <el-input type="text" v-model="form.memo" autocomplete="off" placeholder="请输入留言"></el-input>
             </el-form-item>
-
-            <el-button type="success" style="margin-left: 140px;" @click="pay">确认转账</el-button>
+            <el-button type="success" style="margin-left: 140px;" :loading="loading" @click="pay">{{loading ? "转账中": "确认转账"}}</el-button>
             <el-button type="default" style="margin-left: 80px;" @click="reset">清空内容</el-button>
         </el-form>
     </div>
@@ -36,13 +35,15 @@
 <script>
 import BigNumber from "bignumber.js";
 import * as jtWallet from "jcc_wallet/lib/jingtum";
-import { JcExchange } from "jcc_rpc";
+import { JcExchange, JcConfig, JcExplorer } from "jcc_rpc";
 import { transferAccount } from "jcc_exchange";
 import { isEmptyObject } from "jcc_common";
+import axios from "axios";
 export default {
   components: {},
   data() {
     return {
+      loading: false,
       form: {
         address: "",
         secret: "",
@@ -63,7 +64,8 @@ export default {
       ],
       amountPlaceHolder: "可转出 - - 数量：- - 个",
       balance: null,
-      exHosts: ["ejedwdjbbl8jgf.jccdex.cn"],
+      exHosts: [],
+      scanHosts: [],
       rules: {
         address: {
           required: true,
@@ -105,7 +107,19 @@ export default {
       }
     };
   },
-  created() {},
+  created() {
+    axios
+      .get("https://jcconfig.jccdex.cn/jc_config.json?t=" + Date.now())
+      .then(res => {
+        if (res && res.status === 200 && res.data) {
+          this.exHosts = res.data.exHosts;
+          this.scanHosts = res.data.scanHosts;
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
   methods: {
     updatePlaceHolder() {
       if (!this.balance) {
@@ -170,7 +184,56 @@ export default {
           .catch(() => {});
       });
     },
+    orderDetail(instance, hash) {
+      return new Promise((resolve, reject) => {
+        setTimeout(async () => {
+          try {
+            const orderDetail = await instance.orderDetail(Date.now(), hash);
+            resolve(orderDetail);
+          } catch (error) {
+            return reject(error);
+          }
+        }, 15000);
+      });
+    },
+
+    async getOrderDetail(hash) {
+      const instance = new JcExplorer(this.scanHosts, 443, true);
+      let orderDetail = null;
+      let count = 0;
+      while (orderDetail === null) {
+        // try 10
+        if (count === 10) {
+          break;
+        }
+        try {
+          orderDetail = await this.orderDetail(instance, hash);
+        } catch (error) {
+          console.log("request order error:", error);
+        } finally {
+          count = count + 1;
+        }
+      }
+      if (!orderDetail) {
+        throw new Error("获取转账详情失败，请去浏览器再次确认转账是否成功");
+      }
+      return orderDetail;
+    },
+
     async confirm() {
+      if (
+        !Array.isArray(this.exHosts) ||
+        this.exHosts.length === 0 ||
+        !Array.isArray(this.scanHosts) ||
+        this.scanHosts.length === 0
+      ) {
+        this.$message.error({
+          message: "请重新刷新网页",
+          duration: 5000
+        });
+        return;
+      }
+      this.loading = true;
       const obj = {
         currency: this.form.currency,
         amount: this.form.amount,
@@ -185,11 +248,26 @@ export default {
       };
       try {
         const hash = await transferAccount(obj);
-        this.$message.success({
-          message: "转账成功",
-          duration: 5000
-        });
+        const orderDetail = await this.getOrderDetail(hash);
+        if (
+          orderDetail &&
+          orderDetail.result &&
+          orderDetail.data &&
+          orderDetail.data.succ === "tesSUCCESS"
+        ) {
+          this.$message.success({
+            message: "转账成功",
+            duration: 5000
+          });
+        } else {
+          this.$message.error({
+            message: "转账失败",
+            duration: 5000
+          });
+        }
+        this.loading = false;
       } catch (error) {
+        this.loading = false;
         this.$message.error({
           message: error.message,
           duration: 5000
