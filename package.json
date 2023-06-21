@@ -16,7 +16,7 @@
     "element-ui": "^2.4.11",
     "jcc_exchange": "^1.0.9",
     "jcc_wallet": "^0.4.1",
-    "nuxt": "^2.0.0"
+    "nuxt": "^3.4.3"
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.27",
